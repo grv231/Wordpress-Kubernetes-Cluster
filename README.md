@@ -202,12 +202,38 @@ kubectl create -f wordpress-web-service.yml
 kubectl create -f wordpress-secrets.yml
 ```
 
-## Project Successful completion
+## Project Successful completion (Stages)
 
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "ProjectSetupCompletion")
+### Stage 1: Cluster Deployment
+![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+
+### Stage 2: Cluster Validation
+
+![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+
+![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+
+### Stage 3: AWS-EFS Volume mount
+
+![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+
+![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+
+### Stage 4: File Deployment
+
+![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+
+### Stage 5: Wordpress Access via URL
+
+![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+
+### Stage 6: Successful static images upload in Wordpress and storage in EFS
+
+![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+
 
 ## Running the tests
-Navigate to the folder **TestScripts** for running the tests. There are two scripts in the folder namely:
+For checking cluster related information, node health status and wordpress image access, please refer to commands and screenshots below:
 
 1. **RedisConsulSmokeTest.sh**
    This file is used for running smoke tests on Redis (redismaster and Slaves) and Consul Clusters. In the script, it has been              specifically written for the server *redismaster*. It can be used for running on the slaves as well, however, the server names and      commands would need to be changed accordingly.
