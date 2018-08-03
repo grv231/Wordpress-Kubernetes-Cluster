@@ -32,6 +32,7 @@ After checking/setting up the prerequisites, we setup the project by following t
 
 1. Kubernetes Cluster needs to be created FOr this we need **kubectl** to be setup first:
 <br>
+
 **MAC-OS**
 ```
 brew install kubernetes-cli
