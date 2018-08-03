@@ -116,7 +116,7 @@ volumes:
   persistentVolumeClaim:
   	claimName: db-storage
 ```
-#### :four: pv-claim.yml
+#### :four: wordpress-db-service.yml
 
 This file is claim the storage with 8 GB specified in the signature. Its signature is:
 
