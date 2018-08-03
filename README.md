@@ -89,7 +89,6 @@ aws ec2 describe-instances
 aws efs create-mount-target file-system-id <id_from step_1> --subnet-id <id_from_step_2> --security-groups <id_from_step_2>
 ```
 
-
 ### Setup files for Kubernetes cluster
 
 We use a bunch of YAML files to setup our wordpress application which has MySQL as backend database and AWS Elastic File system (EFS) as volume mount for persistent storage for images (when we upload things to our wordpress application). Files are:
@@ -205,13 +204,13 @@ kubectl create -f wordpress-secrets.yml
 ## Project Successful completion (Stages)
 
 ### Stage 1: Cluster Deployment
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Clusterdeploy.jpeg "Cluster_Deployment")
 
 ### Stage 2: Cluster Validation
 
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/ValidateCluster.jpeg "Validate_Cluster")
 
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Getnodes.jpeg "Node_Information")
 
 ### Stage 3: AWS-EFS Volume mount
 
