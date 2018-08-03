@@ -1,5 +1,5 @@
 # Wordpress-Kubernetes-Cluster
-Deploying a Wordpress image on Kubernetes cluster backed up by MySQL Database and AWS - EFS for persistence volume
+Deploying a Wordpress image on Kubernetes cluster backed up by MySQL Database and AWS - EFS for persistent volume
 
 ## Getting Started
 
@@ -23,7 +23,7 @@ Following softwares and tools needs to be setup before proceeding with the proje
  - [Namecheap](https://www.namecheap.com) was used to purchase IP addresses
  - [AWS-Route53 : DNS](https://aws.amazon.com/route53/) for routing the requests to AWS resources
  
-3. **Git** installation for cloning the project.
+4. **Git** installation for cloning the project.
 - [Debian](https://www.liquidweb.com/kb/install-git-ubuntu-16-04-lts/) operating systems
 - Mac OS has in-built git installation. 
 
@@ -31,6 +31,7 @@ Following softwares and tools needs to be setup before proceeding with the proje
 After checking/setting up the prerequisites, we setup the project by following the steps below in the *same order*:
 
 1. Kubernetes Cluster needs to be created FOr this we need **kubectl** to be setup first:
+<br>
 **MAC-OS**
 ```
 brew install kubernetes-cli
@@ -68,9 +69,87 @@ kops update cluster kubernetes.<your cluster name>
 ```
 kubectl get node
 ```
-6. Check the state of cluster using:
 
-**Project Successful completion** should look like this:
+### Deploying Wordpress application
+
+We use a bunch of YAML files to setup our wordpress application which has MySQL as backend database and AWS Elastic File system (EFS) as volume mount for persistent storage for images (when we upload things to our wordpress application). Files are:
+
+#### :one: storage.yml
+
+This file is used to create autoprovisioned volumes on the region provided with volume type (gp2) in our case. Its signature is:
+
+```yml
+kind: StorageClass
+provisioner: kubernetes.io/aws-ebs
+```
+#### :two: pv-claim.yml
+
+This file is claim the storage with 8 GB specified in the signature. Its signature is:
+
+```yml
+kind: PersistenceVolumeClaim
+spec:
+  resources:
+    requests:
+      storage: 8Gi
+```
+#### :three: wordpress-db.yml
+
+ - This file is used to deploy a MySQL image in pod with replication controller enabled to generate 1 prelica only.
+ - Moreover,  **selector** configuration is being used to map it with our original *wordpress image*. 
+ - The passwordto log into the wordpress image uses **secrets** file and stores it in MySQL database
+ - Finally, the persistent volume claim of 8 GB's is mapped with **persistentvolumeclaim**
+
+```yml
+kind: ReplicationController
+selector:
+    app: wordpress-db
+env:
+- name: MYSQL_ROOT_PASSWORD
+  valueFrom:
+  	secretKeyRef:
+           name: wordpress-secrets
+           key: db-password
+volumes:
+- name: mysql-storage
+  persistentVolumeClaim:
+  	claimName: db-storage
+```
+#### :four: pv-claim.yml
+
+This file is claim the storage with 8 GB specified in the signature. Its signature is:
+
+```yml
+kind: PersistenceVolumeClaim
+spec:
+  resources:
+    requests:
+      storage: 8Gi
+```
+#### :five: pv-claim.yml
+
+This file is claim the storage with 8 GB specified in the signature. Its signature is:
+
+```yml
+kind: PersistenceVolumeClaim
+spec:
+  resources:
+    requests:
+      storage: 8Gi
+```
+#### :six: pv-claim.yml
+
+This file is claim the storage with 8 GB specified in the signature. Its signature is:
+
+```yml
+kind: PersistenceVolumeClaim
+spec:
+  resources:
+    requests:
+      storage: 8Gi
+```
+
+## Project Successful completion
 
 ![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "ProjectSetupCompletion")
 
