@@ -27,6 +27,7 @@ Following softwares and tools needs to be setup before proceeding with the proje
 - [Debian](https://www.liquidweb.com/kb/install-git-ubuntu-16-04-lts/) operating systems
 - Mac OS has in-built git installation. 
 
+
 ### Project Setup
 After checking/setting up the prerequisites, we setup the project by following the steps below in the *same order*:
 
@@ -70,8 +71,26 @@ kops update cluster kubernetes.<your cluster name>
 ```
 kubectl get node
 ```
+6. Create a EFS volume on AWS and copy its name. Following [this](https://docs.aws.amazon.com/efs/latest/ug/gs-step-two-create-efs-resources.html) for creating EFS volume. Copy its name once its done. The name will be added to the **wordpress-web** file which is explained in the next section.
 
-### Deploying Wordpress application
+Another way is to setup EFS is using **aws-cli**. Steps required are:
+
+1. Create an EFS volume using aws-cli tools. Issue the following command and copy the **FileSystemID** parameter value:
+```
+aws efs create-file-system --creation-token 1
+```
+
+2. Run the following command to get the **subnet-id** of the Kubernetes cluster which was launched before:
+```
+aws ec2 describe-instances
+```
+3. Get the **subnet-id** and **security groups** of either *master* or *slave* nodes from the description of following command. Now issue the following:
+```
+aws efs create-mount-target file-system-id <id_from step_1> --subnet-id <id_from_step_2> --security-groups <id_from_step_2>
+```
+
+
+### Setup files for Kubernetes cluster
 
 We use a bunch of YAML files to setup our wordpress application which has MySQL as backend database and AWS Elastic File system (EFS) as volume mount for persistent storage for images (when we upload things to our wordpress application). Files are:
 
@@ -118,36 +137,69 @@ volumes:
 ```
 #### :four: wordpress-db-service.yml
 
-This file is claim the storage with 8 GB specified in the signature. Its signature is:
+- Service definition file for database service discovery for wordpress-mysql. 
+- It basically maps the service with the yml file *wordpress-db* yml file and open the wordpress db for DNS service discovery
 
 ```yml
-kind: PersistenceVolumeClaim
+kind: Service
 spec:
-  resources:
-    requests:
-      storage: 8Gi
+  selector:
+    app: wordpress-db
 ```
-#### :five: pv-claim.yml
+#### :five: wordpress-web.yml
 
-This file is claim the storage with 8 GB specified in the signature. Its signature is:
+- This file consists of the actual wordpress image to be setup on Pods.
+- It refers to **secrets** file for password matching
+- Additionally, it launches the containers in **deployment** mode, which helps in *rolling updates* to the cluster
+- Finally, we also create an EFS persistent volume to account for the static images on our blog post and the respective mount path on the wordpress image itself */var/www/html/wp-content/uploads*
 
 ```yml
-kind: PersistenceVolumeClaim
-spec:
-  resources:
-    requests:
-      storage: 8Gi
+kind: Deployment
+env:
+   - name: WORDPRESS_DB_PASSWORD
+     valueFrom:
+        secretKeyRef:
+           name: wordpress-secrets
+              key: db-password
+volumes:
+   - name: uploads
+     nfs:
+        server: us-west-1a.<efs_vol_name>.efs.us-west-1.amazonaws.com
 ```
-#### :six: pv-claim.yml
+#### :six: wordpress-web-service.yml
 
-This file is claim the storage with 8 GB specified in the signature. Its signature is:
+- Service definition file for wordpress appication service discovery for wordpress-web. 
+- It basically maps the service with the yml file *wordpress-web* yml file and open the wordpress application for DNS service discovery
+- Additionally, a load balancer configuration is alos provided for effictive load balancing using AWS ELB (Elastic Load Balancer)
 
 ```yml
-kind: PersistenceVolumeClaim
-spec:
-  resources:
-    requests:
-      storage: 8Gi
+kind: Service
+selector:
+    app: wordpress
+type: LoadBalancer
+```
+#### :seven: wordpress-secrets.yml
+
+- This file is used for passing secrets (*passwords* and other application information) to other configuration files. 
+
+```yml
+kind: Secret
+data:
+  db-password: cGFzc3dvcmQ=
+```
+
+### Deploying Wordpress application on AWS environment
+
+After completing the above steps, run the following commands to deploy the pods in kubernetes cluster:
+
+```bash
+kubectl create -f storage.yml
+kubectl create -f pv-claim.yml
+kubectl create -f wordpress-db.yml
+kubectl create -f wordpress-db-service.yml
+kubectl create -f wordpress-web.yml
+kubectl create -f wordpress-web-service.yml
+kubectl create -f wordpress-secrets.yml
 ```
 
 ## Project Successful completion
