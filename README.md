@@ -214,21 +214,23 @@ kubectl create -f wordpress-secrets.yml
 
 ### Stage 3: AWS-EFS Volume mount
 
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/EFS_Mount.jpeg "EFS_mount")
 
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+### Stage 4: File Deployment for Pods
 
-### Stage 4: File Deployment
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/FileDeployment.jpeg "Pods_files_deployment")
 
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+### Stage 6: Route 53 configuration for Load Balancers
 
-### Stage 5: Wordpress Access via URL
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Route53_config.jpg "Route53_config")
 
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+### Stage 7: Wordpress Access via URL (http://wordpress.kubernetes.kubetest231.site)
+
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Wordpress_Image.jpg "Wordpress_URL")
 
 ### Stage 6: Successful static images upload in Wordpress and storage in EFS
 
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/SetupCompletion.png "Cluster_Deployment")
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Wordpress_EFS.jpg "StaticImage_EFS_Wordpress")
 
 
 ## Running the tests
