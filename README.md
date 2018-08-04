@@ -163,13 +163,13 @@ env:
 volumes:
    - name: uploads
      nfs:
-        server: us-west-1a.<efs_vol_name>.efs.us-west-1.amazonaws.com
+        server: us-west-1b.<efs_vol_name>.efs.us-west-1.amazonaws.com
 ```
 #### :six: wordpress-web-service.yml
 
 - Service definition file for wordpress appication service discovery for wordpress-web. 
 - It basically maps the service with the yml file *wordpress-web* yml file and open the wordpress application for DNS service discovery
-- Additionally, a load balancer configuration is alos provided for effictive load balancing using AWS ELB (Elastic Load Balancer)
+- Additionally, a  classic load balancer configuration is also provided for effective load balancing using AWS ELB (Elastic Load Balancer)
 
 ```yml
 kind: Service
@@ -204,6 +204,7 @@ kubectl create -f wordpress-secrets.yml
 ## Project Successful completion (Stages)
 
 ### Stage 1: Cluster Deployment
+
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Clusterdeploy.jpeg "Cluster_Deployment")
 
 ### Stage 2: Cluster Validation
@@ -220,15 +221,15 @@ kubectl create -f wordpress-secrets.yml
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/FileDeployment.jpeg "Pods_files_deployment")
 
-### Stage 6: Route 53 configuration for Load Balancers
+### Stage 5: Route 53 configuration for Load Balancers
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Route53_config.jpg "Route53_config")
 
-### Stage 7: Wordpress Access via URL (http://wordpress.kubernetes.kubetest231.site)
+### Stage 6: Wordpress Access via URL (http://wordpress.kubernetes.kubetest231.site)
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Wordpress_Image.jpg "Wordpress_URL")
 
-### Stage 6: Successful static images upload in Wordpress and storage in EFS
+### Stage 7: Successful static images upload in Wordpress and storage in EFS
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Wordpress_EFS.jpg "StaticImage_EFS_Wordpress")
 
