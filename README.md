@@ -236,80 +236,50 @@ kubectl create -f wordpress-secrets.yml
 
 ## Running the tests
 
-1. **RedisConsulSmokeTest.sh**
-   This file is used for running smoke tests on Redis (redismaster and Slaves) and Consul Clusters. In the script, it has been              specifically written for the server *redismaster*. It can be used for running on the slaves as well, however, the server names and      commands would need to be changed accordingly.
+- **Testing Fault Tolerance**
 
-   Make sure that you are not logged into any servers provisioned (redismaster, slaves or sentinel) before running the script. The          script needs to be run where the *Vagrantfile* is present from CLI. Run the following command:
+Firstly, we are testing fault tolerance -HA by issuing *delete pods* commands. In this case, all running containers are terminated 	 however, new containers take its place. Firstly, to get all poid information, we issue
+```bash
+kubectl get pods
 ```
-vagrant ssh redismaster -c ‘/vagrant/TestScripts/RedisConsulSmokeTest.sh; /bin/bash’
+After getting the information, we issue delete commands on all Pods to check fault tolerance.
+```bash
+kubectl delete pods/wordpress-db-<unique-id>
+kubectl delete pods/wordpress-deployment-<unique-id>
+kubectl delete pods/wordpress-deployment-<unique-id>
 ```
-**Test Output**
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/RedisConsulTest.png "RedisConsulSmokeTest")
+When we issue the following commands, automatically old containers are terminated and new ones pop up, automatically handling High availabilaty-Fault tolderance by the Kubernetes cluster iteself.
 
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Wordpress_EFS.jpg "Pods_FaultTolerance")
 
-2. **SentinelSmoketest.sh**
-   This file is used for running smoke tests on only for checking Redis Clustering. Since the Redis Sentinel servers were put up on a      different server, we can check the Redis Cluster status from Redis Sentinels (example **redissentinel01**). Elaborate information can    be gathered from these tests using Redis Sentinels servers.
-
-   Make sure that you are not logged into any servers provisioned (redismaster, slaves or sentinel) before running the script. The          script needs to be run where the *Vagrantfile* is present. For running the script, use the following command on the command line:
+Addtionally, when we issue logs on the pods, we get the messages that wordpress was still present on the pods. COmmand issued is:
+```bash
+kubectl logs wordpress-deployment-<unique-id>
 ```
-vagrant ssh redissentinel01 -c ‘/vagrant/TestScripts/SentinelSmoketest.sh; /bin/bash’
-```
-**Test Output**
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/RedisSentinelTest.png "RedisSentinelSmokeTest")
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Wordpress_EFS.jpg "Pods_logs")
 
-3. **Healthcheck for Redis service using Consul**
-   Healthcheck information has been configured in the *consulmasterscript.sh* and *consulslavescript.sh*. This healthcheck gives the        information about Redis service running on port 6379. If the service is on, consul shows **service sync** successful.
-   
-   The healthcheck was setup in the JSON file using the following entries
-```json
-"service": {
-	"name": "redis6379",
-	"tags": ["master"],
-	"port": 6379,
-	"check": {
-		"args": ["nc", "-zv", "127.0.0.1", "6379"],
-		"interval": "5s"
-	}
-}
+- **Testing Persistent volume - AWS EFS**
+Now we login into one of the deployment pods to check whether our static image is still present or not (after destroying-automaticaaly recreated pods). We issue the following command to login into the pods and run bash commands:
+```bash
+kubectl exec wordpress-deployment-<unique-id> -it /bin/bash
+ls wp-contents/uploads/2018/08
 ```
 
-The information can be gathered by running the following command on any node (Master or Slave):
-```
-consul monitor
-```
-**Healthcheck**
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/HealthCheck.png "Healthcheck")
+For this project, a music mixer image was added to the blogpost. It still persists, even when the pods were destroyed!!
 
-## Important Information
- - Cluster can be resized by adding/removing nodes in the *Vagrantfile* **BOXES** variable.
- - Additionally, add the master,slave,sentinel nodes in the **hosts** file for correct *Ansible* provisioning
- - Quorum can be increased/decresed for Sentinel Clusters using the file *ansible-redis/defaults/main.yml*. Values can be                  increased/decresed in this file.
-```yaml
-redis_sentinel_monitors:
-  - name: master01
-    host: localhost
-    port: 6379
-    quorum: 2
-    auth_pass: ant1r3z
-    down_after_milliseconds: 30000
-    parallel_syncs: 1
-    failover_timeout: 180000
-    notification_script: false
-    client_reconfig_script: false
-```
-## Architecture Diagram
+![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/RedisConsulTest.png Image_Persistence")
 
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/Arch_RedisConsul.jpg "Design")
 
 ## Built With
 
-* [Vagrant](https://www.vagrantup.com/docs/) - Managing virtual machines
-* [Vagrant Hostmanager](https://github.com/devopsgroup-io/vagrant-hostmanager) - Managing multiple machine environment
-* [Ansible](https://docs.ansible.com/) - Provisioning redis and redis-sentinel on servers
-* [Redis](https://redis.io/documentation) - Redis server (Master-Slave setup)
-* [Redis Sentinel](https://redis.io/topics/sentinel) - Sentinel for monitoring Master-Slaves Redis cluster
-* [Consul](https://www.consul.io/docs/index.html) - Consul for service discovery in a cluster setup
-* [Ruby](http://tutorials.jumpstartlab.com/topics/vagrant_setup.html) - Ruby for vagrant setup
+* [Kubernetes](https://github.com/kubernetes) - Managing containers in a cluster for High Availabilaty
+* [Wordpress](https://wordpress.com) - Application deployed on pods
+* [KOPS](https://github.com/kubernetes/kops) -Provisioning Kubernetes cluster on Amazon Web Services
+* [Amazon Web Services (AWS)](https://aws.amazon.com) - Cloud-platform for deploying kubernetes cluster
+* [AWS-EC2 Serversl](https://aws.amazon.com/ec2/) - Servers used for Master-Slave nodes
+* [AWS-Route53](https://aws.amazon.com/route53/) - DNS service for AWS
+* [AWS-ElasticFileSystem (EFS)](https://aws.amazon.com/efs/) - Service used for deploying persistent volumes
+* [Namecheap](https://www.namecheap.com/) - Domain for deploying cluster
 
 
 
