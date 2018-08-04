@@ -232,7 +232,6 @@ kubectl create -f wordpress-secrets.yml
 
 
 ## Running the tests
-For checking cluster related information, node health status and wordpress image access, please refer to commands and screenshots below:
 
 1. **RedisConsulSmokeTest.sh**
    This file is used for running smoke tests on Redis (redismaster and Slaves) and Consul Clusters. In the script, it has been              specifically written for the server *redismaster*. It can be used for running on the slaves as well, however, the server names and      commands would need to be changed accordingly.
