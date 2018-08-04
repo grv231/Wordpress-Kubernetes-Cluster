@@ -26,6 +26,7 @@ Following softwares and tools needs to be setup before proceeding with the proje
 4. **Git** installation for cloning the project.
 - [Debian](https://www.liquidweb.com/kb/install-git-ubuntu-16-04-lts/) operating systems
 - Mac OS has in-built git installation. 
+<br>
 
 
 ### Project Setup
@@ -71,6 +72,7 @@ kops update cluster kubernetes.<your cluster name>
 ```
 kubectl get node
 ```
+<br>
 
 ### Setting up EFS Volume
 EFS volume is setup using **aws-cli**. The name will be added to the **wordpress-web** file which is explained in the next section. Steps required are:
@@ -87,6 +89,7 @@ aws ec2 describe-instances
 ```
 aws efs create-mount-target file-system-id <id_from step_1> --subnet-id <id_from_step_2> --security-groups <id_from_step_2>
 ```
+<br>
 
 ### Setup files for Kubernetes cluster
 
@@ -205,32 +208,39 @@ kubectl create -f wordpress-secrets.yml
 ### Stage 1: Cluster Deployment
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Clusterdeploy.jpeg "Cluster_Deployment")
+<br>
 
 ### Stage 2: Cluster Validation
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/ValidateCluster.jpeg "Validate_Cluster")
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Getnodes.jpeg "Node_Information")
+<br>
 
 ### Stage 3: AWS-EFS Volume mount
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/EFS_Mount.jpeg "EFS_mount")
+<br>
 
 ### Stage 4: File Deployment for Pods
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/FileDeployment.jpeg "Pods_files_deployment")
+<br>
 
 ### Stage 5: Route 53 configuration for Load Balancers
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Route53_config.jpg "Route53_config")
+<br>
 
 ### Stage 6: Wordpress Access via URL (http://wordpress.kubernetes.kubetest231.site)
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Wordpress_Image.jpg "Wordpress_URL")
+<br>
 
 ### Stage 7: Successful static images upload in Wordpress and storage in EFS
 
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Wordpress_EFS.jpg "StaticImage_EFS_Wordpress")
+<br>
 
 
 ## Running the tests
@@ -256,6 +266,7 @@ Addtionally, when we issue logs on the pods, we get the messages that wordpress 
 kubectl logs wordpress-deployment-<unique-id>
 ```
 ![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/logs.jpeg "Pods_logs")
+<br>
 
 
 - **Testing Persistent volume - AWS EFS**
