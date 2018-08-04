@@ -66,20 +66,19 @@ kops create cluster --name=kubernetes.<your cluster name> --state=s3://<your-buc
 
 kops update cluster kubernetes.<your cluster name>
 ```
-5. Check the state of cluster using:
+6. Check the state of cluster using:
 
 ```
 kubectl get node
 ```
-6. Create a EFS volume on AWS and copy its name. Following [this](https://docs.aws.amazon.com/efs/latest/ug/gs-step-two-create-efs-resources.html) for creating EFS volume. Copy its name once its done. The name will be added to the **wordpress-web** file which is explained in the next section.
 
-Another way is to setup EFS is using **aws-cli**. Steps required are:
+### Setting up EFS Volume
+EFS volume is setup using **aws-cli**. The name will be added to the **wordpress-web** file which is explained in the next section. Steps required are:
 
 1. Create an EFS volume using aws-cli tools. Issue the following command and copy the **FileSystemID** parameter value:
 ```
 aws efs create-file-system --creation-token 1
 ```
-
 2. Run the following command to get the **subnet-id** of the Kubernetes cluster which was launched before:
 ```
 aws ec2 describe-instances
@@ -250,13 +249,14 @@ kubectl delete pods/wordpress-deployment-<unique-id>
 ```
 When we issue the following commands, automatically old containers are terminated and new ones pop up, automatically handling High availabilaty-Fault tolderance by the Kubernetes cluster iteself.
 
-![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Wordpress_EFS.jpg "Pods_FaultTolerance")
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/HA.jpeg "Pods_FaultTolerance")
 
 Addtionally, when we issue logs on the pods, we get the messages that wordpress was still present on the pods. COmmand issued is:
 ```bash
 kubectl logs wordpress-deployment-<unique-id>
 ```
-![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Wordpress_EFS.jpg "Pods_logs")
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/logs.jpeg "Pods_logs")
+
 
 - **Testing Persistent volume - AWS EFS**
 Now we login into one of the deployment pods to check whether our static image is still present or not (after destroying-automaticaaly recreated pods). We issue the following command to login into the pods and run bash commands:
@@ -264,19 +264,19 @@ Now we login into one of the deployment pods to check whether our static image i
 kubectl exec wordpress-deployment-<unique-id> -it /bin/bash
 ls wp-contents/uploads/2018/08
 ```
-
 For this project, a music mixer image was added to the blogpost. It still persists, even when the pods were destroyed!!
 
-![alt text](https://github.com/grv231/Vagrant-RedisSentinel-Consul-Clustering/blob/master/Images/RedisConsulTest.png Image_Persistence")
+![alt text](https://github.com/grv231/Wordpress-Kubernetes-Cluster/blob/master/img/Persistence.jpeg "Image_Persistence")
 
 
 ## Built With
 
 * [Kubernetes](https://github.com/kubernetes) - Managing containers in a cluster for High Availabilaty
 * [Wordpress](https://wordpress.com) - Application deployed on pods
-* [KOPS](https://github.com/kubernetes/kops) -Provisioning Kubernetes cluster on Amazon Web Services
+* [KOPS](https://github.com/kubernetes/kops) - Provisioning Kubernetes cluster on Amazon Web Services
+* [kubectl](https://rancher.com/docs/rancher/v2.x/en/k8s-in-rancher/kubectl/) - Issuing commands to kubernetes cluster
 * [Amazon Web Services (AWS)](https://aws.amazon.com) - Cloud-platform for deploying kubernetes cluster
-* [AWS-EC2 Serversl](https://aws.amazon.com/ec2/) - Servers used for Master-Slave nodes
+* [AWS-EC2](https://aws.amazon.com/ec2/) - Servers used for Master-Slave nodes
 * [AWS-Route53](https://aws.amazon.com/route53/) - DNS service for AWS
 * [AWS-ElasticFileSystem (EFS)](https://aws.amazon.com/efs/) - Service used for deploying persistent volumes
 * [Namecheap](https://www.namecheap.com/) - Domain for deploying cluster
